@@ -29,6 +29,7 @@ const farmButtonVariants = cva(
         wiggle: "hover:animate-wiggle",
         float: "animate-float",
         glow: "animate-pulse-glow",
+        spin: "hover:animate-spin-slow",
       }
     },
     defaultVariants: {

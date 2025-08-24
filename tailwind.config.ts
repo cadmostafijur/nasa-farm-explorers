@@ -117,7 +117,9 @@ export default {
 				'float': 'float 3s ease-in-out infinite',
 				'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
 				'spin-slow': 'spin 3s linear infinite',
-				'bounce-slow': 'bounce 2s infinite'
+				'bounce-slow': 'bounce 2s infinite',
+				'shimmer': 'shimmer 2s linear infinite',
+				'fade-in': 'fade-in 0.3s ease-out'
 			}
 		}
 	},
