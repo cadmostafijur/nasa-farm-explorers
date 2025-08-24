@@ -37,12 +37,16 @@ export const SplashScreen = ({ onStartAdventure }: SplashScreenProps) => {
 
         {/* App Title */}
         <div className="space-y-4">
-          <h1 className="text-6xl font-kids font-bold text-primary drop-shadow-lg">
+          
+          {/* <h1 className="text-6xl font-kids font-bold text-primary drop-shadow-lg">
             NASA Farm
-          </h1>
-          <h2 className="text-5xl font-kids font-bold text-orange drop-shadow-lg">
+          </h1> */}
+          {/* <h2 className="text-5xl font-kids font-bold text-orange drop-shadow-lg">
             Explorers
-          </h2>
+          </h2> */}
+           <h2 className="text-5xl font-kids font-bold text-orange drop-shadow-lg">
+            KRISHOK
+          </h2> 
         </div>
 
         {/* Subtitle */}
