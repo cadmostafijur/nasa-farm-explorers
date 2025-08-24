@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FarmCard } from "./FarmCard";
 import { FarmButton } from "./FarmButton";
 import { AnimatedIcon } from "./AnimatedIcon";
-import { X, Sprout, Heart, Droplets, Flower, Play, ArrowLeft } from "lucide-react";
+import { X, Sprout, Heart, Droplets, Flower, Play } from "lucide-react";
 
 interface ActionPopupProps {
   type: "crops" | "animals" | "water" | "fertilizer";
@@ -15,21 +15,13 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [videoId, setVideoId] = useState("");
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
   if (!isOpen) return null;
 
   const handleAction = async (action: string) => {
     // Special case for Plant Seeds to show video
     if (action === "Plant Seeds") {
-      // Show loading state briefly before video loads
-      setActionInProgress(true);
       setVideoId("COZkBrGu2tY");
-      
-      // Short delay to show loading indicator before video appears
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      setActionInProgress(false);
       setShowVideo(true);
       return;
     }
@@ -53,31 +45,19 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
   };
 
   const handleVideoEnd = () => {
-    // Show a brief loading transition
-    setIsVideoLoaded(false);
     setShowVideo(false);
     setActionInProgress(true);
     
-    // Continue with normal action flow after video ends with a success animation
+    // Continue with normal action flow after video ends
     setTimeout(() => {
       setActionInProgress(false);
       setShowSuccess(true);
-      
-      // Display a celebratory sound or animation here
-      // playSound("success.mp3"); // Example of what could be added
       
       setTimeout(() => {
         setShowSuccess(false);
         setTimeout(onClose, 300);
       }, 3000);
     }, 1500);
-  };
-  
-  // Handle video iframe loaded event
-  const handleVideoLoaded = () => {
-    setTimeout(() => {
-      setIsVideoLoaded(true);
-    }, 1000); // Slight delay to ensure video is actually playing
   };
 
   const getPopupContent = () => {
@@ -127,78 +107,41 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
 
   const content = getPopupContent();
 
-  // Full screen video view with improved user experience
+  // Full screen video view
   if (showVideo) {
     return (
-      <div className="fixed inset-0 bg-gradient-to-b from-black/95 to-black/85 flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto">
-        <div className="w-full max-w-5xl animate-fade-in">
-          {/* Video container with better framing */}
-          <div className="relative">
-            {/* User-friendly close button with label */}
-            <div className="flex justify-between items-center mb-4">
-              <div className="bg-green-600/20 text-green-500 text-sm px-4 py-2 rounded-full flex items-center">
-                <Play size={16} className="mr-2" /> Educational Video
-              </div>
-              <button
-                onClick={() => setShowVideo(false)}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-                aria-label="Close video"
+      <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-0">
+        <div className="w-full max-w-5xl">
+          {/* Close button */}
+          <button
+            onClick={() => setShowVideo(false)}
+            className="absolute top-4 right-4 p-3 bg-white/20 hover:bg-white/30 rounded-full transition-colors z-10"
+          >
+            <X size={24} className="text-white" />
+          </button>
+          
+          {/* YouTube Video - Full size */}
+          <div>
+            <div className="aspect-video rounded-lg overflow-hidden bg-black relative w-full">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`}
+                title="How to Plant Seeds"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+            <div className="mt-6 text-center bg-black/30 p-6 rounded-xl backdrop-blur-sm">
+              <h3 className="text-xl font-bold mb-2 text-white">Let's Learn About Planting!</h3>
+              <p className="text-white/80 mb-6">Watch this video to learn how to plant seeds properly!</p>
+              <FarmButton 
+                variant="green" 
+                onClick={handleVideoEnd}
+                className="mx-auto px-8 py-3 text-lg"
               >
-                <span className="text-white text-sm">Back to Farm</span>
-                <X size={18} className="text-white" />
-              </button>
-            </div>
-            
-            {/* YouTube Video - Full size with loading indicator */}
-            <div className="rounded-xl overflow-hidden bg-black relative w-full shadow-2xl border-4 border-black">
-              <div className="aspect-video w-full h-auto relative">
-                {/* Loading indicator */}
-                <div className={`absolute inset-0 flex items-center justify-center bg-black z-10 ${isVideoLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="animate-spin h-12 w-12 border-4 border-green-500 border-t-transparent rounded-full"></div>
-                    <p className="text-green-400 animate-pulse">Loading educational video...</p>
-                  </div>
-                </div>
-                
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full z-20"
-                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`}
-                  title="How to Plant Seeds"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  onLoad={handleVideoLoaded}
-                ></iframe>
-              </div>
-            </div>
-            
-            {/* Improved video info panel */}
-            <div className="mt-6 text-center bg-gradient-to-br from-green-900/60 to-green-800/40 p-6 rounded-xl backdrop-blur-sm shadow-lg border border-green-500/30">
-              <h3 className="text-2xl font-bold mb-3 text-white flex justify-center items-center gap-2">
-                <Sprout className="text-green-400" /> Let's Learn About Planting!
-              </h3>
-              
-              <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-                Watch this educational video to learn the proper techniques for planting seeds. 
-                After watching, you'll be ready to plant your own crops on your space farm!
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <FarmButton 
-                  variant="green" 
-                  onClick={handleVideoEnd}
-                  className="px-8 py-3 text-lg shadow-lg hover:scale-105 transition-transform"
-                >
-                  <Play className="mr-2" size={20} /> I've Finished Watching
-                </FarmButton>
-                
-                <button 
-                  onClick={() => setShowVideo(false)}
-                  className="px-6 py-2 border border-white/30 text-white/80 rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  Watch Later
-                </button>
-              </div>
+                <Play className="mr-2" size={20} /> I've Finished Watching
+              </FarmButton>
             </div>
           </div>
         </div>
@@ -248,7 +191,7 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
           </div>
         )}
 
-        {/* Actions with improved UX */}
+        {/* Actions */}
         {!showSuccess && !actionInProgress && (
           <div className="space-y-3">
             {content.actions.map((action, index) => (
@@ -256,13 +199,11 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
                 key={action.name}
                 variant={action.color as any}
                 size="md"
-                className={`w-full justify-start text-left p-4 h-auto ${action.name === "Plant Seeds" ? "relative overflow-hidden group hover:shadow-lg transition-shadow" : ""}`}
+                className="w-full justify-start text-left p-4 h-auto"
                 onClick={() => handleAction(action.name)}
               >
-                <div className="flex items-start gap-3 relative z-10">
-                  <div className={`text-2xl ${action.name === "Plant Seeds" ? "bg-green-100 w-12 h-12 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform" : ""}`}>
-                    {action.emoji}
-                  </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">{action.emoji}</span>
                   <div>
                     <div className="font-bold">{action.name}</div>
                     <div className="text-sm opacity-80 font-normal">
@@ -270,19 +211,11 @@ export const ActionPopup = ({ type, isOpen, onClose }: ActionPopupProps) => {
                     </div>
                   </div>
                   {action.name === "Plant Seeds" && (
-                    <div className="ml-auto flex flex-col items-end gap-1">
-                      <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full flex items-center text-xs font-medium animate-pulse">
-                        <Play size={12} className="mr-1" /> Educational Video
-                      </div>
-                      <span className="text-xs text-green-600">Tap to watch</span>
+                    <div className="ml-auto flex items-center text-xs text-green">
+                      <Play size={12} className="mr-1" /> Watch Video
                     </div>
                   )}
                 </div>
-                
-                {/* Background decoration for video action */}
-                {action.name === "Plant Seeds" && (
-                  <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-green-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                )}
               </FarmButton>
             ))}
           </div>
