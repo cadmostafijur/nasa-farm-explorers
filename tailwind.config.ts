@@ -26,7 +26,9 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					light: 'hsl(var(--primary-light))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +54,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Bright accent colors for kids
+				yellow: 'hsl(var(--yellow))',
+				orange: 'hsl(var(--orange))',
+				green: 'hsl(var(--green))',
+				red: 'hsl(var(--red))',
+				purple: 'hsl(var(--purple))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +70,21 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			fontFamily: {
+				'comic': ['Comic Sans MS', 'Trebuchet MS', 'cursive'],
+				'kids': ['Fredoka One', 'Comic Sans MS', 'cursive']
+			},
+			backgroundImage: {
+				'gradient-sky': 'var(--gradient-sky)',
+				'gradient-farm': 'var(--gradient-farm)',
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-rainbow': 'var(--gradient-rainbow)'
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'glow': 'var(--shadow-glow)',
+				'fun': 'var(--shadow-fun)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -88,7 +111,13 @@ export default {
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'bounce-in': 'bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+				'wiggle': 'wiggle 0.5s ease-in-out',
+				'float': 'float 3s ease-in-out infinite',
+				'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+				'spin-slow': 'spin 3s linear infinite',
+				'bounce-slow': 'bounce 2s infinite'
 			}
 		}
 	},
