@@ -20,7 +20,7 @@ An interactive React app that visualizes NASA Earth observation data for farms: 
 ### How it works
 
 1. User picks or navigates to a farm location on the interactive map.
-2. The app computes a date range and calls NASA POWER to fetch daily records for that point.
+2. The app fetches current conditions (temperature, humidity, precipitation) from Open‑Meteo and daily history from NASA POWER for that point.
 3. It renders farm dashboards (weather, rainfall, radiation) and health indicators using charts and cards.
 4. Background base‑map layers come from NASA GIBS WMTS tiles for NDVI and true‑color context.
 
@@ -33,6 +33,7 @@ An interactive React app that visualizes NASA Earth observation data for farms: 
 
 ### Features
 
+- Realtime weather (°C, humidity, precipitation) with periodic refresh
 - Farm dashboard with weather, rainfall, humidity, and solar insights
 - Interactive map and globe visuals
 - NDVI and precipitation layers from NASA GIBS
@@ -74,6 +75,13 @@ Visit the dev server URL printed in the terminal.
 - WMTS base: `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best`
 - Tile matrix: `GoogleMapsCompatible_Level9`
 - Builder: `gibsTileUrl(layer, isoDate, z, x, y)` returns a PNG tile URL for a given date and layer.
+
+### Realtime weather usage
+
+- Provider: Open‑Meteo current conditions API
+- Endpoint shape: `.../forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,precipitation&timezone=auto`
+- Units: Temperature in °C; precipitation converted to inches in UI
+- Implementation: `src/components/farm/WeatherPanel.tsx`
 
 ### Environment & keys
 
