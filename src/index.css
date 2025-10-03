@@ -157,7 +157,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-comic;
+    @apply bg-background text-foreground;
     background: var(--gradient-sky);
     min-height: 100vh;
   }

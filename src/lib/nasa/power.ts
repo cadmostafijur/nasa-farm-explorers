@@ -40,17 +40,20 @@ export async function fetchPowerDaily(params: FetchPowerDailyParams): Promise<Po
 	const dates = Object.keys(t2m || {}).length ? Object.keys(t2m) : Object.keys(pr || {});
 	const records: PowerDailyRecord[] = dates.map((d: string) => ({
 		date: d,
-		temperatureC: toNum(t2m[d]),
-		humidity: toNum(rh2m[d]),
-		rainfallMm: toNum(pr[d]),
-		solarRadiation: toNum(rad[d])
+    temperatureC: cleanNum(t2m[d]),
+    humidity: cleanNum(rh2m[d]),
+    rainfallMm: cleanNum(pr[d]),
+    solarRadiation: cleanNum(rad[d])
 	}));
 	return { location: { latitude, longitude }, records };
 }
 
-function toNum(v: unknown): number | null {
-	const n = typeof v === "string" ? Number(v) : (v as number);
-	return Number.isFinite(n) ? (n as number) : null;
+function cleanNum(v: unknown): number | null {
+  const n = typeof v === "string" ? Number(v) : (v as number);
+  if (!Number.isFinite(n)) return null;
+  // POWER uses sentinel fill values like -999, -9999 for missing
+  if (n <= -900) return null;
+  return n as number;
 }
 
 

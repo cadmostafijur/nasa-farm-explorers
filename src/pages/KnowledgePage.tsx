@@ -10,14 +10,37 @@ export default function KnowledgePage({ onBack }: { onBack: () => void }) {
   const [power, setPower] = useState<any>(null);
   const [forecast, setForecast] = useState<{date: string; pop: number; rain: number}[] | null>(null);
   const today = new Date();
-  const iso = today.toISOString().slice(0,10);
+  const yesterday = new Date(today.getTime());
+  yesterday.setDate(yesterday.getDate() - 1);
+  const iso = yesterday.toISOString().slice(0,10);
   const [countryQuery, setCountryQuery] = useState("");
 
   useEffect(() => {
-    const start = yyyymmdd(addDays(new Date(), -7));
-    const end = yyyymmdd(new Date());
+    const start = yyyymmdd(addDays(yesterday, -7));
+    const end = yyyymmdd(yesterday);
     fetchPowerDaily({ latitude: lat, longitude: lon, start, end })
-      .then(setPower).catch(() => setPower(null));
+      .then(async (resp) => {
+        const hasValid = (resp.records || []).some((r: any) => r.temperatureC != null || r.rainfallMm != null);
+        if (!hasValid) {
+          // Fallback to Open-Meteo daily if POWER has fill values
+          try {
+            const d = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`).then(r=>r.json());
+            const out = (d?.daily?.time || []).map((t: string, i: number) => ({
+              date: t.replaceAll('-',''),
+              temperatureC: (d.daily.temperature_2m_max?.[i] + d.daily.temperature_2m_min?.[i]) / 2,
+              humidity: null,
+              rainfallMm: d.daily.precipitation_sum?.[i] ?? null,
+              solarRadiation: null,
+            }));
+            setPower({ location: { latitude: lat, longitude: lon }, records: out });
+          } catch {
+            setPower(resp);
+          }
+        } else {
+          setPower(resp);
+        }
+      })
+      .catch(() => setPower(null));
     // precipitation forecast (free): Open-Meteo
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=precipitation_probability,precipitation&timezone=auto`)
       .then(r => r.json())
@@ -84,7 +107,9 @@ export default function KnowledgePage({ onBack }: { onBack: () => void }) {
           {power ? (
             <ul className="text-sm list-disc pl-5">
               {power.records.slice(-5).map((r: any) => (
-                <li key={r.date}>Day {r.date}: T {r.temperatureC ?? "-"}°C, Rain {r.rainfallMm ?? "-"} mm</li>
+                <li key={r.date}>
+                  Day {r.date}: T {r.temperatureC != null ? r.temperatureC : "-"}°C, Rain {r.rainfallMm != null ? r.rainfallMm : "-"} mm
+                </li>
               ))}
             </ul>
           ) : (
