@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SplashScreen } from "@/components/farm/SplashScreen";
 import { FarmDashboard } from "@/components/farm/FarmDashboard";
 import KnowledgePage from "./KnowledgePage";
+import GamesPage from "./GamesPage";
 
 export default function FarmApp() {
   const [currentScreen, setCurrentScreen] = useState<"splash" | "dashboard" | "knowledge" | string>("splash");
@@ -22,6 +23,8 @@ export default function FarmApp() {
         return <FarmDashboard onNavigate={handleNavigate} />;
       case "knowledge":
         return <KnowledgePage onBack={() => setCurrentScreen("dashboard")} />;
+      case "games":
+        return <GamesPage onBack={() => setCurrentScreen("dashboard")} />;
       default:
         return (
           <div className="min-h-screen flex items-center justify-center">
