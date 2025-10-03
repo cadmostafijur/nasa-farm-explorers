@@ -1,73 +1,99 @@
-# Welcome to your Lovable project
+### NASA Farm Explorers
 
-## Project info
+An interactive React app that visualizes NASA Earth observation data for farms: recent weather, vegetation health, precipitation and true‑color imagery. Built to help farmers and learners explore conditions that affect crop health.
 
-**URL**: https://lovable.dev/projects/97eb6620-75fa-4d2f-85f1-a2cee349ce3b
+### Why NASA data?
 
-## How can I edit this code?
+- **Global coverage**: Consistent, science‑grade datasets anywhere on Earth.
+- **Agriculture‑relevant variables**: Temperature, humidity, rainfall, and solar radiation for modeling crop health and irrigation.
+- **Open access**: Freely available APIs and tiled imagery suitable for education and decision support.
 
-There are several ways of editing your application.
+### What data we use
 
-**Use Lovable**
+- **NASA POWER Daily (point) API**: Weather and solar variables per day for a lat/lon.
+  - Parameters: `T2M` (air temperature at 2 m), `RH2M` (relative humidity), `PRECTOTCORR` (corrected precipitation), `ALLSKY_SFC_SW_DWN` (solar radiation)
+  - Implementation: see `src/lib/nasa/power.ts` (`fetchPowerDaily`)
+- **NASA GIBS WMTS tiles**: Map layers for vegetation and true‑color imagery.
+  - Layers used: `GPM_3IMERGHH_Precipitation_Rate`, `VIIRS_SNPP_NDVI`, `MODIS_Terra_NDVI_16Day`, `MODIS_Terra_CorrectedReflectance_TrueColor`, `VIIRS_SNPP_CorrectedReflectance_TrueColor`
+  - Tile URL builder: see `src/lib/nasa/gibs.ts` (`gibsTileUrl`)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/97eb6620-75fa-4d2f-85f1-a2cee349ce3b) and start prompting.
+### How it works
 
-Changes made via Lovable will be committed automatically to this repo.
+1. User picks or navigates to a farm location on the interactive map.
+2. The app computes a date range and calls NASA POWER to fetch daily records for that point.
+3. It renders farm dashboards (weather, rainfall, radiation) and health indicators using charts and cards.
+4. Background base‑map layers come from NASA GIBS WMTS tiles for NDVI and true‑color context.
 
-**Use your preferred IDE**
+### Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Farm dashboard with weather, rainfall, humidity, and solar insights
+- Interactive map and globe visuals
+- NDVI and precipitation layers from NASA GIBS
+- Shadcn‑UI components for a modern, accessible UI
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Tech stack
 
-Follow these steps:
+- React + TypeScript (Vite)
+- Tailwind CSS + shadcn‑ui (Radix)
+- React Router
+- TanStack Query for data fetching and caching
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Getting started
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Prereqs: Node.js 18+ and npm.
 
-# Step 3: Install the necessary dependencies.
+```bash
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Visit the dev server URL printed in the terminal.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Project structure (high level)
 
-**Use GitHub Codespaces**
+- `src/pages` — routes like `Index.tsx`, `FarmApp.tsx`
+- `src/components/farm` — farm UI (map, dashboards, stats)
+- `src/lib/nasa` — NASA integrations: `power.ts`, `gibs.ts`
+- `public/` — static assets
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### NASA POWER usage
 
-## What technologies are used for this project?
+- Endpoint: `https://power.larc.nasa.gov/api/temporal/daily/point`
+- Query includes: `parameters=T2M,RH2M,PRECTOTCORR,ALLSKY_SFC_SW_DWN`, `community=ag`, `latitude`, `longitude`, `start`, `end`, `format=JSON`
+- Missing values: POWER uses sentinel values (e.g., -999). We coerce those to `null` in `cleanNum` inside `src/lib/nasa/power.ts`.
 
-This project is built with:
+### NASA GIBS usage
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- WMTS base: `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best`
+- Tile matrix: `GoogleMapsCompatible_Level9`
+- Builder: `gibsTileUrl(layer, isoDate, z, x, y)` returns a PNG tile URL for a given date and layer.
 
-## How can I deploy this project?
+### Environment & keys
 
-Simply open [Lovable](https://lovable.dev/projects/97eb6620-75fa-4d2f-85f1-a2cee349ce3b) and click on Share -> Publish.
+- The current integrations use public, non‑authenticated endpoints for the selected layers and POWER community access. If you add authenticated layers or services, store secrets via environment variables and never commit them.
 
-## Can I connect a custom domain to my Lovable project?
+### Development scripts
 
-Yes, you can!
+- `npm run dev` — start Vite dev server
+- `npm run build` — production build
+- `npm run preview` — preview the production build
+- `npm run lint` — lint the project
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Attribution
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Imagery and data from NASA Global Imagery Browse Services (GIBS) and NASA POWER Project.
+- Cite appropriately if you publish results derived from these datasets. See each service’s documentation for citation guidance.
+
+### Limitations & notes
+
+- NDVI composites can lag by days to weeks; recent dates may be unavailable.
+- POWER provides modeled/reanalysis data; local conditions can vary.
+- Internet connectivity is required to stream tiles and fetch daily data.
+
+### Contributing
+
+Issues and PRs are welcome. Please include reproduction steps and screenshots for UI changes.
+
+### License
+
+MIT — see `LICENSE` if present in the repository.
