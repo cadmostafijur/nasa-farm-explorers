@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { SplashScreen } from "@/components/farm/SplashScreen";
 import { FarmDashboard } from "@/components/farm/FarmDashboard";
+import KnowledgePage from "./KnowledgePage";
 
 export default function FarmApp() {
-  const [currentScreen, setCurrentScreen] = useState<"splash" | "dashboard" | string>("splash");
+  const [currentScreen, setCurrentScreen] = useState<"splash" | "dashboard" | "knowledge" | string>("splash");
 
   const handleStartAdventure = () => {
     setCurrentScreen("dashboard");
@@ -19,6 +20,8 @@ export default function FarmApp() {
         return <SplashScreen onStartAdventure={handleStartAdventure} />;
       case "dashboard":
         return <FarmDashboard onNavigate={handleNavigate} />;
+      case "knowledge":
+        return <KnowledgePage onBack={() => setCurrentScreen("dashboard")} />;
       default:
         return (
           <div className="min-h-screen flex items-center justify-center">
