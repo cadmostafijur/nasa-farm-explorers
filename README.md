@@ -24,6 +24,13 @@ An interactive React app that visualizes NASA Earth observation data for farms: 
 3. It renders farm dashboards (weather, rainfall, radiation) and health indicators using charts and cards.
 4. Background base‑map layers come from NASA GIBS WMTS tiles for NDVI and true‑color context.
 
+### Some Images
+
+  1. <img width="1882" height="837" alt="image" src="https://github.com/user-attachments/assets/f05bf32a-6562-4956-a710-5081ab887546" />
+  2. <img width="1908" height="870" alt="image" src="https://github.com/user-attachments/assets/72b26f7e-b954-40ca-aca2-e6fccb086d2e" />
+  3. <img width="1880" height="845" alt="image" src="https://github.com/user-attachments/assets/b1f899fb-2ca1-430e-8c3c-cd1a16a5f29e" />
+  4. <img width="941" height="850" alt="image" src="https://github.com/user-attachments/assets/0d20df3b-edff-4fce-9e2a-e7c53145a103" />
+
 ### Features
 
 - Farm dashboard with weather, rainfall, humidity, and solar insights
